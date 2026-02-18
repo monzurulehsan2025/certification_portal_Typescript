@@ -4,11 +4,31 @@ import { useState } from 'react';
 const MedAI = () => {
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('idle'); // idle, thinking, complete
+  const [response, setResponse] = useState<{ answer: string; sources: string[] } | null>(null);
 
-  const handleAsk = () => {
+  const handleAsk = async () => {
     if (!query) return;
     setStatus('thinking');
-    setTimeout(() => setStatus('complete'), 2000);
+
+    try {
+      const res = await fetch('http://localhost:8000/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setResponse({ answer: data.answer, sources: data.sources });
+        setStatus('complete');
+      } else {
+        throw new Error('Backend error');
+      }
+    } catch (error) {
+      console.error('Failed to fetch from AI backend:', error);
+      setStatus('idle');
+      alert('AI Backend not reachable. Please ensure the Python service is running on port 8000.');
+    }
   };
 
   return (
@@ -22,19 +42,21 @@ const MedAI = () => {
       </div>
 
       <div className="interaction-area">
-        {status === 'complete' ? (
+        {status === 'complete' && response ? (
           <div className="ai-response animate-fade-in">
             <p className="response-text">
-              Based on the latest **Global Clinical Guidelines (2025)**, the recommended protocol for
-              this scenario involves a multi-modal approach focusing on patient outcomes and
-              evidence-based pharmacological intervention.
+              {response.answer}
             </p>
             <div className="sources">
               <span>Sources:</span>
-              <div className="source-tag">Professional Medical Journal v4.2</div>
-              <div className="source-tag">Pharma Compliance Handbook</div>
+              {response.sources.map((source, idx) => (
+                <div key={idx} className="source-tag">{source}</div>
+              ))}
             </div>
-            <button className="reset-btn" onClick={() => setStatus('idle')}>Ask another question</button>
+            <button className="reset-btn" onClick={() => {
+              setStatus('idle');
+              setResponse(null);
+            }}>Ask another question</button>
           </div>
         ) : (
           <div className="prompt-area">
