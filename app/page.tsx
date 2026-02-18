@@ -2,9 +2,7 @@
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import MedAI from './components/MedAI';
-import Stats from './components/Stats';
-import Resources from './components/Resources';
-import AIAgentOrchestrator from './components/AIAgentOrchestrator';
+
 
 export default function Dashboard() {
   const certifications = [
@@ -21,61 +19,6 @@ export default function Dashboard() {
 
         <div className="content-inner">
           <MedAI />
-
-          <Stats />
-
-          <div className="dashboard-sections">
-            <section className="certifications-section">
-              <div className="section-header">
-                <h2>My Certifications</h2>
-                <button className="view-all">View All</button>
-              </div>
-              <div className="cert-list">
-                {certifications.map((cert, i) => (
-                  <div key={i} className="cert-item animate-fade-in" style={{ animationDelay: `${0.4 + i * 0.1}s` }}>
-                    <div className="cert-info">
-                      <h3>{cert.name}</h3>
-                      <span className="cert-deadline">Deadline: {cert.deadline}</span>
-                    </div>
-                    <div className="cert-status-area">
-                      <span className={`status-badge ${cert.status.toLowerCase().replace(' ', '-')}`}>
-                        {cert.status}
-                      </span>
-                      <div className="progress-ring-mini">
-                        {cert.progress}%
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <Resources />
-            </section>
-
-            <section className="learning-path">
-              <div className="section-header">
-                <h2>Next Steps</h2>
-              </div>
-              <div className="path-card">
-                <div className="step active">
-                  <div className="step-number">1</div>
-                  <div className="step-content">
-                    <h4>Complete Module 7: Compliance</h4>
-                    <p>Understanding the latest Sunshine Act updates.</p>
-                  </div>
-                </div>
-                <div className="step">
-                  <div className="step-number">2</div>
-                  <div className="step-content">
-                    <h4>Attend Live Webinar</h4>
-                    <p>RAG Implementations in Medical Affairs - Tomorrow 2PM.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-
-          <AIAgentOrchestrator />
         </div>
       </main>
 
